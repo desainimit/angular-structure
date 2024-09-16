@@ -13,7 +13,12 @@ import { ColDef } from 'ag-grid-community';
 export class UserManagementComponent {
   rowData!: any;
   colDef: ColDef[] = [
-    { headerName: 'Sr No', valueGetter: 'node.rowIndex + 1', flex: 0.5, rowDrag: true, },
+    {
+      headerName: 'Sr No',
+      valueGetter: 'node.rowIndex + 1',
+      flex: 0.5,
+      rowDrag: true,
+    },
     { field: 'username', headerName: 'Username', flex: 1 },
     { field: 'fullName', flex: 1 },
     { field: 'email', flex: 1 },
