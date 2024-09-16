@@ -11,13 +11,20 @@ import { FormsModule } from '@angular/forms';
 import { LayoutsModule } from '@layouts/layouts.module';
 import { RouterOutlet } from '@angular/router';
 import { environment } from '@env/environment.development';
-import { HTTP_INTERCEPTORS, provideHttpClient } from '@angular/common/http';
+import {
+  HTTP_INTERCEPTORS,
+  provideHttpClient,
+  withInterceptors,
+} from '@angular/common/http';
 import { ToastrModule } from 'ngx-toastr';
 import {
   API_URL,
   BaseUrlInterceptor,
-} from './core/interceptors/base-url.interceptor';
+} from '@core/interceptors/base-url.interceptor';
+import { tokenInterceptor } from '@core/interceptors/token.interceptor';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NgxPermissionsModule } from 'ngx-permissions';
+
 @NgModule({
   declarations: [AppComponent],
   imports: [
@@ -34,10 +41,11 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
       preventDuplicates: true,
       tapToDismiss: true,
     }),
+    NgxPermissionsModule.forRoot(),
   ],
   providers: [
-    provideHttpClient(),
     provideClientHydration(),
+    provideHttpClient(withInterceptors([tokenInterceptor])),
     { provide: HTTP_INTERCEPTORS, useClass: BaseUrlInterceptor, multi: true },
     {
       provide: API_URL,

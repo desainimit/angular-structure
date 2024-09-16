@@ -5,24 +5,58 @@ import {
   IAuthLoginUserService,
   IAuthRegisterUserService,
 } from '@core/models/interfaces/IAuthServices';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { TokenService } from './token.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
+  private isLoggedInSubject = new BehaviorSubject<boolean>(false);
+  isLoggedIn$: Observable<boolean> = this.isLoggedInSubject.asObservable();
+
   private OtpSent: boolean = false;
   private otpMessage: string = '';
 
   constructor(
-    private router: Router,
     private http: HttpClient,
+    private tokenService: TokenService,
     @Inject(API_URL) private apiUrl: string
-  ) {}
+  ) {
+    if (this.tokenService.isTokenAvailable('accessToken')) {
+      this.setLoggedIn(true);
+    }
+  }
+
+  registerUser(user: IAuthRegisterUserService): Observable<any> {
+    return this.http.post(this.apiUrl + '/auth/register', user, {
+      withCredentials: true,
+    });
+  }
 
   login(user: IAuthLoginUserService): Observable<any> {
-    return this.http.post(this.apiUrl + '/auth/login', user);
+    return this.http.post(this.apiUrl + '/auth/login', user, {
+      withCredentials: true,
+    });
+  }
+
+  verifyOtp(otp: string): Observable<any> {
+    return this.http.post(this.apiUrl + '/auth/verifyOtp', otp, {
+      withCredentials: true,
+    });
+  }
+
+  logout(): Observable<any> {
+    return this.http.post(this.apiUrl + '/auth/logout', {
+      withCredentials: true,
+    });
+  }
+
+  getRolePermissions(): Observable<any> {
+    return this.http.get(this.apiUrl + '/auth/getRoleAndPermissions', {
+      withCredentials: true,
+    });
   }
 
   getOtpSent(): boolean {
@@ -39,7 +73,11 @@ export class AuthService {
     return this.otpMessage;
   }
 
-  registerUser(user: IAuthRegisterUserService): Observable<any> {
-    return this.http.post(this.apiUrl + '/auth/register', user);
+  setLoggedIn(value: boolean): void {
+    this.isLoggedInSubject.next(value);
+  }
+
+  isLoggedIn() {
+    return this.tokenService.isTokenAvailable('accessToken');
   }
 }

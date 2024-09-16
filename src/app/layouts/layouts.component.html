@@ -1,9 +1,9 @@
-<div class="container-fluid vh-100 bg-dark">
+<div class="container-fluid vh-100">
   <div class="row">
     <div class="col-12 p-0">
       <app-topbar>
-        <li class="nav-item">
-          <a class="nav-link" routerLink="/books" routerLinkActive="active">Books</a>
+        <li class="nav-item" >
+          <a *ngxPermissionsOnly="'read_user'" class="nav-link" routerLink="/getUsers" routerLinkActive="active">User Management</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" routerLink="/authors" routerLinkActive="active">Authors</a>
@@ -14,7 +14,7 @@
       </app-topbar>
     </div>
   </div>
-  <div class="row">
+  <div class="row pt-5">
     <div class="col-12">
       <router-outlet></router-outlet>
     </div>

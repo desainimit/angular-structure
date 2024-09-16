@@ -18,6 +18,7 @@ import { ToastService } from '@app/core/services/toast.service';
 export class RegisterComponent implements OnInit {
   registerForm!: FormGroup;
   isSubmitted: boolean = false;
+  isLoading: boolean = false;
 
   constructor(
     private authService: AuthService,
@@ -42,17 +43,26 @@ export class RegisterComponent implements OnInit {
 
   submitForm() {
     this.isSubmitted = true;
+    this.isLoading = true;
     if (this.registerForm.valid) {
       this.authService
         .registerUser(this.registerForm.value as IAuthRegisterUserService)
         .subscribe(
           (res) => {
-            // console.log(res);
+            if (res.success) {
+              this.isLoading = false;
+              this.registerForm.reset();
+              this.router.navigate(['/auth/login']);
+              this.toastr.showSuccess(res.message);
+            }
           },
           (error) => {
+            this.isLoading = false;
             this.toastr.showError(error.error.message);
           }
         );
+    } else {
+      this.isLoading = false;
     }
   }
 }

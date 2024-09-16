@@ -33,12 +33,12 @@ export class LoginComponent implements OnInit {
 
   buildForm(): void {
     this.loginForm = this.fb.group({
-      email: new FormControl('', [Validators.required]),
+      email: new FormControl('', [Validators.required, Validators.email]),
       password: new FormControl('', [Validators.required]),
     });
   }
 
-  submitLoginForm() {
+  submitLoginForm(): void {
     this.isSubmitted = true;
     this.isLoading = true;
 
@@ -47,16 +47,15 @@ export class LoginComponent implements OnInit {
         .login(this.loginForm.value as IAuthLoginUserService)
         .subscribe(
           (res) => {
-            const isOtpSent = this.authService.setOtpSent(true, res.message);
-            if (isOtpSent) {
-              this.isLoading = false;
-              this.authService.setOtpSent(false);
-              this.router.navigate(['/auth/otp']);
+            if (res.success) {
+              const isOtpSent = this.authService.setOtpSent(true, res.message);
+              if (isOtpSent) {
+                this.isLoading = false;
+                this.router.navigate(['/auth/otp']);
+              }
             }
           },
           (error) => {
-            console.log(error);
-
             this.isLoading = false;
             this.toastr.showError(error.error.message);
           }

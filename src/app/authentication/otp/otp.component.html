@@ -12,12 +12,16 @@
         <div class="card-body p-3 p-md-4 p-xl-5">
           <!-- Otp Message -->
           <h2 class="fs-6 fw-normal text-center text-secondary mb-4">Enter the 6-digit code</h2>
-          <form id="otpForm" action="#!">
+          <form class="otpForm" [formGroup]="otpForm" (ngSubmit)="submitOtpForm()">
             <div class="row gy-2 overflow-hidden">
               <div class="col-12">
                 <div class="form-floating mb-3">
-                  <input type="text" class="form-control" name="otp" id="otp" placeholder="Enter OTP" pattern="\d{6}" required>
+                  <input type="text" class="form-control" formControlName="otp" id="otp" placeholder="Enter OTP" pattern="\d{6}" [ngClass]="{'is-valid': otpForm.controls['otp'].valid, 'is-invalid': otpForm.controls['otp'].errors && isSubmitted}">
                   <label for="otp" class="form-label">6-digit OTP</label>
+                  <div *ngIf="otpForm.controls['otp'].errors && isSubmitted" class="invalid-feedback">
+                    <div *ngIf="otpForm.controls['otp'].errors?.['required']"> otp is required</div>
+                    <div *ngIf="otpForm.controls['otp'].errors?.['minlength']"> otp is 6 digit long </div>
+                  </div>
                 </div>
               </div>
               <ng-container *ngIf="otpMessage">
@@ -30,7 +34,17 @@
               </ng-container>
               <div class="col-12">
                 <div class="d-grid my-3">
-                  <button class="btn btn-primary btn-lg" type="submit">Verify</button>
+
+                  <ng-container *ngIf="isLoading">
+                    <div class="btn btn-primary btn-lg">
+                      <app-loader></app-loader>
+                    </div>
+                  </ng-container>
+
+                  <ng-container *ngIf="!isLoading">
+                    <button class="btn btn-primary btn-lg" type="submit">Verify</button>
+                  </ng-container>
+
                 </div>
               </div>
               <div class="col-12">
