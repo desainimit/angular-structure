@@ -17,4 +17,14 @@ export class AdminServiceService {
       withCredentials: true,
     });
   }
+
+  deleteUser(userId: string): Observable<any> {
+    return this.http.post(
+      this.apiUrl + '/user/delete-user',
+      { userId },
+      {
+        withCredentials: true,
+      }
+    );
+  }
 }

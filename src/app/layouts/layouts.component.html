@@ -2,8 +2,8 @@
   <div class="row">
     <div class="col-12 p-0">
       <app-topbar>
-        <li class="nav-item" >
-          <a *ngxPermissionsOnly="'read_user'" class="nav-link" routerLink="/getUsers" routerLinkActive="active">User Management</a>
+        <li class="nav-item" *ngxPermissionsOnly="'read_user'">
+          <a class="nav-link" routerLink="/getUsers" routerLinkActive="active">User Management</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" routerLink="/authors" routerLinkActive="active">Authors</a>

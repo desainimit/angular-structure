@@ -93,6 +93,20 @@ export class UserManagementComponent {
   }
 
   deleteUser(id: string) {
-    console.log(id);
+    if (confirm('Are you sure you want to delete this user?')) {
+      this.adminService.deleteUser(id).subscribe(
+        (res) => {
+          if (res.success) {
+            this.toast.showSuccess(res.message);
+            this.rowData = this.rowData.filter((user: any) => user._id !== id);
+          } else {
+            this.toast.showError(res.message);
+          }
+        },
+        (error) => {
+          this.toast.showError(error.error.message);
+        }
+      );
+    }
   }
 }
